@@ -60,7 +60,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "CSlant\\GitHubProject\\Providers\\GitHubProjectServiceProvider"
+        "CSlant\\GitHubProject\\Providers\\GithubProjectServiceProvider"
       ]
     }
   },

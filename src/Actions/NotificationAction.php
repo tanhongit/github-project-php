@@ -1,6 +1,6 @@
 <?php
 
-namespace CSlant\GitHubProject\Http\Actions;
+namespace CSlant\GitHubProject\Actions;
 
 class NotificationAction
 {
