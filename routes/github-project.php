@@ -15,5 +15,6 @@ use Illuminate\Support\Facades\Route;
 $routePrefix = config('github-project.route_prefix');
 
 Route::prefix($routePrefix)->name("$routePrefix.")->group(function () {
+    Route::post('/webhook', \CSlant\GitHubProject\Actions\WebhookAction::class);
     Route::get('/', \CSlant\GitHubProject\Actions\NotificationAction::class);
 });
