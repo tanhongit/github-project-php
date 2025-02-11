@@ -2,6 +2,7 @@
 
 namespace CSlant\GitHubProject\Services;
 
+use Github\AuthMethod;
 use Github\Client;
 
 class WebhookService
@@ -11,7 +12,7 @@ class WebhookService
     public function __construct(Client $client)
     {
         $this->client = $client;
-        $this->client->authenticate(config('github-project.github.token'), null, Client::AUTH_ACCESS_TOKEN);
+        $this->client->authenticate((string) config('github-project.github.token'), null, AuthMethod::ACCESS_TOKEN);
     }
 
     public function eventApproved(string $event): bool
@@ -19,6 +20,12 @@ class WebhookService
         return str_contains($event, 'project');
     }
 
+    /**
+     * @param  string  $contentNodeId
+     * @param  string  $message
+     *
+     * @return array<string, mixed>
+     */
     public function commentOnNode(string $contentNodeId, string $message): array
     {
         $query = <<<'GRAPHQL'
