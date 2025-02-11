@@ -63,6 +63,10 @@ class GithubProjectServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../lang' => resource_path('lang/packages/github-project'),
         ], 'lang');
+
+        $this->publishes([
+            __DIR__.'/../../resources/views' => resource_path('views/vendor/github-project'),
+        ], 'views');
     }
 
     /**
@@ -76,6 +80,8 @@ class GithubProjectServiceProvider extends ServiceProvider
         }
 
         $this->loadTranslationsFrom(__DIR__.'/../../lang', 'github-project');
+
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'github-project');
     }
 
     /**
