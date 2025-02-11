@@ -6,4 +6,9 @@ return [
     'name' => 'GitHubProject',
 
     'route_prefix' => $routePrefix,
+
+    'github' => [
+        'access_token' => env('GITHUB_ACCESS_TOKEN'),
+        'graphql_url' => env('GITHUB_GRAPHQL_URL', 'https://api.github.com/graphql'),
+    ],
 ];

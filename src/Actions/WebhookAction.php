@@ -3,7 +3,6 @@
 namespace CSlant\GitHubProject\Actions;
 
 use CSlant\GitHubProject\Services\WebhookService;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Request;
 
 class WebhookAction
@@ -21,6 +20,12 @@ class WebhookAction
         $event = $request->server->get('HTTP_X_GITHUB_EVENT');
 
         if (!$this->webhookService->eventApproved($event)) {
+            return;
+        }
+
+        $payload = json_decode($request->getContent(), true);
+
+        if (!isset($payload['action'])) {
             return;
         }
     }
