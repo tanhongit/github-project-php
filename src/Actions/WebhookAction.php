@@ -24,6 +24,7 @@ class WebhookAction
             return response()->json(['message' => __('github-project::github-project.error.event.denied')], 403);
         }
 
+        /** @var array<string, list<string, mixed>> $payload */
         $payload = json_decode($request->getContent(), true);
 
         if (!isset($payload['action'])) {
@@ -53,7 +54,7 @@ class WebhookAction
             compact('editor', 'fieldName', 'fromValue', 'toValue')
         )->render();
 
-        $this->webhookService->commentOnNode($nodeId, $message);
+        $this->webhookService->commentOnNode((string) $nodeId, $message);
 
         return response()->json(['message' => __('github-project::github-project.success.message')]);
     }
