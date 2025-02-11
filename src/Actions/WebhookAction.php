@@ -48,7 +48,8 @@ class WebhookAction
         $fromValue = $fieldData['from']['name'] ?? 'Unknown';
         $toValue = $fieldData['to']['name'] ?? 'Unknown';
 
-        $message = view('github-project::md.comment',
+        $message = view(
+            'github-project::md.comment',
             compact('editor', 'fieldName', 'fromValue', 'toValue')
         )->render();
 
