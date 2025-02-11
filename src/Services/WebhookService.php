@@ -12,7 +12,7 @@ class WebhookService
     public function __construct(Client $client)
     {
         $this->client = $client;
-        $this->client->authenticate((string) config('github-project.github.token'), null, AuthMethod::ACCESS_TOKEN);
+        $this->client->authenticate((string) config('github-project.github.access_token'), null, AuthMethod::ACCESS_TOKEN);
     }
 
     public function eventApproved(string $event): bool
