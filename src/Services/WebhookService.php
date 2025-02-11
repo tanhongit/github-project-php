@@ -19,7 +19,7 @@ class WebhookService
         return str_contains($event, 'project');
     }
 
-    public function commentOnIssueOrPR(string $contentNodeId, string $message): array
+    public function commentOnNode(string $contentNodeId, string $message): array
     {
         $query = <<<'GRAPHQL'
         mutation($input: AddCommentInput!) {
