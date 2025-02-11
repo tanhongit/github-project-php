@@ -32,8 +32,9 @@ class GithubProjectServiceProvider extends ServiceProvider
         $this->registerCommands();
 
         $this->app->singleton(Client::class, function () {
-            $client = new Client();
+            $client = new Client;
             $client->authenticate(config('github-project.github.access_token'), null, AuthMethod::ACCESS_TOKEN);
+
             return $client;
         });
     }
