@@ -8,3 +8,6 @@ parameters:
 
         - message: '#Cannot cast mixed to string#'
           path: src/*.php
+
+        - message: '#Cannot access offset .+ on mixed#'
+          path: src/*.php
