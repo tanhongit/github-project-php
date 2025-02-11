@@ -3,6 +3,7 @@
 namespace CSlant\GitHubProject\Actions;
 
 use CSlant\GitHubProject\Services\WebhookService;
+use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class WebhookAction
@@ -14,19 +15,22 @@ class WebhookAction
         $this->webhookService = $webhookService;
     }
 
-    public function __invoke()
+    public function __invoke(): JsonResponse
     {
         $request = Request::createFromGlobals();
         $event = $request->server->get('HTTP_X_GITHUB_EVENT');
 
         if (!$this->webhookService->eventApproved($event)) {
-            return response()->json(['message' => 'Event not approved'], 400);
+            return response()->json(['message' => __('github-project::github-project.error.event.denied')], 403);
         }
 
         $payload = json_decode($request->getContent(), true);
 
         if (!isset($payload['action'])) {
-            return response()->json(['message' => 'Not an action event'], 400);
+            return response()->json(
+                ['message' => __('github-project::github-project.error.event.action_not_found')],
+                400
+            );
         }
 
         $nodeId = $payload['projects_v2_item']['content_node_id'] ?? null;
@@ -34,17 +38,22 @@ class WebhookAction
         $editor = $payload['sender']['login'] ?? 'Unknown';
 
         if (!$nodeId || !$fieldData) {
-            return response()->json(['message' => 'Missing required fields'], 400);
+            return response()->json(
+                ['message' => __('github-project::github-project.error.event.missing_fields')],
+                400
+            );
         }
 
         $fieldName = $fieldData['field_name'] ?? 'Unknown Field';
         $fromValue = $fieldData['from']['name'] ?? 'Unknown';
         $toValue = $fieldData['to']['name'] ?? 'Unknown';
 
-        $message = "**$editor** updated **$fieldName** from **$fromValue** to **$toValue**.";
+        $message = view('github-project::md.comment',
+            compact('editor', 'fieldName', 'fromValue', 'toValue')
+        )->render();
 
         $this->webhookService->commentOnNode($nodeId, $message);
 
-        return response()->json(['message' => 'Comment added'.$message]);
+        return response()->json(['message' => __('github-project::github-project.success.message')]);
     }
 }
