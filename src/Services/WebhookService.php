@@ -37,8 +37,8 @@ class WebhookService
         $variables = [
             'input' => [
                 'subjectId' => $contentNodeId,
-                'body' => $message
-            ]
+                'body' => $message,
+            ],
         ];
 
         return $this->client->graphql()->execute($query, $variables);
