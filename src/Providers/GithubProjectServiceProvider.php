@@ -2,6 +2,8 @@
 
 namespace CSlant\GithubProject\Providers;
 
+use Github\AuthMethod;
+use Github\Client;
 use Illuminate\Support\ServiceProvider;
 
 class GithubProjectServiceProvider extends ServiceProvider
@@ -28,6 +30,12 @@ class GithubProjectServiceProvider extends ServiceProvider
         $this->registerConfigs();
 
         $this->registerCommands();
+
+        $this->app->singleton(Client::class, function () {
+            $client = new Client();
+            $client->authenticate(config('github-project.github.access_token'), null, AuthMethod::ACCESS_TOKEN);
+            return $client;
+        });
     }
 
     /**
