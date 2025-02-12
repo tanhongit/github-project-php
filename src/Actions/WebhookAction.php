@@ -18,9 +18,8 @@ class WebhookAction
     public function __invoke(): JsonResponse
     {
         $request = Request::createFromGlobals();
-        $event = $request->server->get('HTTP_X_GITHUB_EVENT');
 
-        if (!$this->webhookService->eventApproved((string) $event)) {
+        if (!$this->webhookService->eventRequestApproved($request)) {
             return response()->json(['message' => __('github-project::github-project.error.event.denied')], 403);
         }
 

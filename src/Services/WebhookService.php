@@ -3,6 +3,7 @@
 namespace CSlant\GitHubProject\Services;
 
 use Github\Client;
+use Symfony\Component\HttpFoundation\Request;
 
 class WebhookService
 {
@@ -18,6 +19,13 @@ class WebhookService
         return str_contains($event, 'project');
     }
 
+    public function eventRequestApproved(Request $request): bool
+    {
+        $event = $request->server->get('HTTP_X_GITHUB_EVENT');
+
+        return $this->eventApproved((string) $event);
+    }
+
     /**
      * @param  string  $contentNodeId
      * @param  string  $message
@@ -27,17 +35,17 @@ class WebhookService
     public function commentOnNode(string $contentNodeId, string $message): array
     {
         $query = <<<'GRAPHQL'
-        mutation($input: AddCommentInput!) {
-            addComment(input: $input) {
-                commentEdge {
-                    node {
-                        id
-                        body
+            mutation($input: AddCommentInput!) {
+                addComment(input: $input) {
+                    commentEdge {
+                        node {
+                            id
+                            body
+                        }
                     }
                 }
             }
-        }
-        GRAPHQL;
+            GRAPHQL;
 
         $variables = [
             'input' => [
