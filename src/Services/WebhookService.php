@@ -3,6 +3,7 @@
 namespace CSlant\GitHubProject\Services;
 
 use Github\Client;
+use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class WebhookService
@@ -24,6 +25,33 @@ class WebhookService
         $event = $request->server->get('HTTP_X_GITHUB_EVENT');
 
         return $this->eventApproved((string) $event);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     *
+     * @return JsonResponse|null
+     */
+    public function validatePayload(array $payload): ?JsonResponse
+    {
+        if (!isset($payload['action'])) {
+            return response()->json(
+                ['message' => __('github-project::github-project.error.event.action_not_found')],
+                400
+            );
+        }
+
+        $nodeId = $payload['projects_v2_item']['content_node_id'] ?? null;
+        $fieldData = $payload['changes']['field_value'] ?? null;
+
+        if (!$nodeId || !$fieldData) {
+            return response()->json(
+                ['message' => __('github-project::github-project.error.event.missing_fields')],
+                400
+            );
+        }
+
+        return null;
     }
 
     /**
