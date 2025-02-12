@@ -30,7 +30,7 @@ class WebhookService
     /**
      * @param  array<string, mixed>  $payload
      *
-     * @return JsonResponse|null
+     * @return null|JsonResponse
      */
     public function validatePayload(array $payload): ?JsonResponse
     {
