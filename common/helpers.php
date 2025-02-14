@@ -7,7 +7,7 @@ if (!function_exists('color_value_format')) {
      *
      * @return string
      */
-    function color_value_format(string $value, string $color ): string
+    function color_value_format(string $value, string $color): string
     {
         $value = str_replace(' ', ' \space ', $value);
 
