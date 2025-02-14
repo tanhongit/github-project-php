@@ -37,6 +37,13 @@ class WebhookService
         if (!isset($payload['action'])) {
             return response()->json(
                 ['message' => __('github-project::github-project.error.event.action_not_found')],
+                404
+            );
+        }
+
+        if (!$this->isStatusCommentEnabled($payload['changes']['field_value']['field_name'])) {
+            return response()->json(
+                ['message' => __('github-project::github-project.error.event.status_comment_disabled')],
                 400
             );
         }
@@ -52,6 +59,22 @@ class WebhookService
         }
 
         return null;
+    }
+
+    /**
+     * Check if the field name is "Status" and if status comments are enabled.
+     *
+     * @param  string  $fieldName
+     *
+     * @return bool
+     */
+    public function isStatusCommentEnabled(string $fieldName): bool
+    {
+        if ($fieldName === 'Status' && !config('github-project.enable_status_comment')) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

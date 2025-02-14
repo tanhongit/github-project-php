@@ -10,6 +10,7 @@ return [
             'denied' => 'The event was denied.',
             'action_not_found' => 'Not an action event.',
             'missing_fields' => 'Missing required fields.',
+            'status_comment_disabled' => 'Status comment is disabled.',
         ],
     ],
 
