@@ -1,1 +1,1 @@
-**{{ $fieldName }}** has been changed from **{{ $fromValue }}** to **{{ $toValue }}**.
+**`{{ $fieldName }}`** has been changed from **{{ $fromValue }}** to **{{ $toValue }}**.
