@@ -5,6 +5,7 @@ namespace CSlant\GitHubProject\Actions;
 use CSlant\GitHubProject\Services\WebhookService;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Throwable;
 
 class WebhookAction
 {
@@ -15,6 +16,9 @@ class WebhookAction
         $this->webhookService = $webhookService;
     }
 
+    /**
+     * @throws Throwable
+     */
     public function __invoke(): JsonResponse
     {
         $request = Request::createFromGlobals();
