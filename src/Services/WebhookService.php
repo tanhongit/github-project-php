@@ -41,7 +41,7 @@ class WebhookService
             );
         }
 
-        if (!$this->isStatusCommentEnabled($payload['changes']['field_value']['field_name'])) {
+        if (!$this->isStatusCommentEnabled((string) $payload['changes']['field_value']['field_name'])) {
             return response()->json(
                 ['message' => __('github-project::github-project.error.event.status_comment_disabled')],
                 400
