@@ -3,7 +3,7 @@
     - From **`{{ $fromValue }}`**
     - To **`{{ $toValue }}`**.
 @elseif ($toValue == null)
-    **`{{ $fieldName }}`** has been removed from **`{{ $fromValue }}`**.
+    The value of **`{{ $fieldName }}`** has been removed.
 @else
     **`{{ $fieldName }}`** has been set to **`{{ $toValue }}`**.
 @endif

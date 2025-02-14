@@ -1,9 +1,9 @@
 @if($fromValue != null && $toValue != null)
-**`{{ $fieldName }}`** has been changed:
-- From **`{{ $fromValue }}`**
-- To **`{{ $toValue }}`**.
+    **`{{ $fieldName }}`** has been changed:
+    - From **`{{ $fromValue }}`**
+    - To **`{{ $toValue }}`**.
 @elseif ($toValue == null)
-**`{{ $fieldName }}`** has been removed from **`{{ $fromValue }}`**.
+    The value of **`{{ $fieldName }}`** has been removed.
 @else
-**`{{ $fieldName }}`** has been set to **`{{ $toValue }}`**.
+    **`{{ $fieldName }}`** has been set to **`{{ $toValue }}`**.
 @endif
