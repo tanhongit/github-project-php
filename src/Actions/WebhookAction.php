@@ -35,10 +35,7 @@ class WebhookAction
             return $validationResponse;
         }
 
-        $message = view(
-            'github-project::md.comment',
-            compact('payload')
-        )->render();
+        $message = view('github-project::md.comment', compact('payload'))->render();
 
         $this->webhookService->commentOnNode((string) $payload['projects_v2_item']['content_node_id'], $message);
 
