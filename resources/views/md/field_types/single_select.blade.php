@@ -1,6 +1,6 @@
 @php
-    $fromColor = $payload['from']['color'] ?? null;
-    $toColor = $payload['to']['color'] ?? null;
+    $fromColor = $fieldData['from']['color'] ?? null;
+    $toColor = $fieldData['to']['color'] ?? null;
 @endphp
 @if($fromValue != null)
 **{{ $fieldName }}** has been changed from $${\color{{{ $fromColor }}}{{ $fromValue }}$$ to $${\color{{{ $toColor }}}{{ $toValue }}$$.
