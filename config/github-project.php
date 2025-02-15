@@ -13,4 +13,6 @@ return [
     ],
 
     'enable_status_comment' => env('GITHUB_PROJECT_ENABLE_STATUS_COMMENT', false),
+
+    'is_queue_enabled' => env('GITHUB_PROJECT_QUEUE_ENABLED', false),
 ];

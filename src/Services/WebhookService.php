@@ -114,4 +114,13 @@ class WebhookService
 
         return $this->client->graphql()->execute($query, $variables);
     }
+
+    public function handleComment(string $contentNodeId, string $message): array
+    {
+        if (config('github-project.is_queue_enabled')) {
+            //
+        }
+
+        return $this->commentOnNode($contentNodeId, $message);
+    }
 }
