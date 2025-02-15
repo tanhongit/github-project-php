@@ -34,7 +34,8 @@ class GithubService
             ],
         ];
 
-        $client = new Client();
+        $client = new Client;
+
         return $client->graphql()->execute($query, $variables);
     }
 

@@ -11,6 +11,7 @@ use Throwable;
 class WebhookAction
 {
     protected WebhookService $webhookService;
+
     protected GithubService $githubService;
 
     public function __construct(WebhookService $webhookService, GithubService $githubService)
