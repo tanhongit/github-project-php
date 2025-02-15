@@ -2,7 +2,6 @@
 
 namespace CSlant\GitHubProject\Jobs;
 
-use CSlant\GitHubProject\Constants\WebHookConstant;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -31,12 +30,15 @@ class ProcessWebhookEvent implements ShouldQueue
      */
     public function handle()
     {
-        $events = Cache::get(WebHookConstant::WEBHOOK_CACHE_NAME, []);
+        $commentAggregationCacheKey = (string) config('github-project.comment_aggregation_cache_key');
+        $commentAggregationTime = (int) config('github-project.comment_aggregation_time');
+
+        $events = Cache::get($commentAggregationCacheKey, []);
         $events[] = $this->eventData;
-        Cache::put(WebHookConstant::WEBHOOK_CACHE_NAME, $events, now()->addSeconds(20));
+        Cache::put($commentAggregationCacheKey, $events, now()->addSeconds($commentAggregationTime));
 
         if (count($events) === 1) {
-            ProcessAggregatedEvents::dispatch()->delay(now()->addSeconds(20));
+            ProcessAggregatedEvents::dispatch()->delay(now()->addSeconds($commentAggregationTime));
         }
     }
 }
