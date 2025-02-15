@@ -58,6 +58,13 @@ class WebhookService
             );
         }
 
+        if (view()->exists('github-project::md.fields.'.$fieldData['field_type'])) {
+            return response()->json(
+                ['message' => __('github-project::github-project.error.event.missing_field_template')],
+                400
+            );
+        }
+
         return null;
     }
 
