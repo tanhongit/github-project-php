@@ -2,19 +2,11 @@
 
 namespace CSlant\GitHubProject\Services;
 
-use Github\Client;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class WebhookService
 {
-    protected Client $client;
-
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
-    }
-
     public function eventApproved(string $event): bool
     {
         return str_contains($event, 'project');
@@ -82,45 +74,5 @@ class WebhookService
         }
 
         return true;
-    }
-
-    /**
-     * @param  string  $contentNodeId
-     * @param  string  $message
-     *
-     * @return array<string, mixed>
-     */
-    public function commentOnNode(string $contentNodeId, string $message): array
-    {
-        $query = <<<'GRAPHQL'
-            mutation($input: AddCommentInput!) {
-                addComment(input: $input) {
-                    commentEdge {
-                        node {
-                            id
-                            body
-                        }
-                    }
-                }
-            }
-            GRAPHQL;
-
-        $variables = [
-            'input' => [
-                'subjectId' => $contentNodeId,
-                'body' => $message,
-            ],
-        ];
-
-        return $this->client->graphql()->execute($query, $variables);
-    }
-
-    public function handleComment(string $contentNodeId, string $message): array
-    {
-        if (config('github-project.is_queue_enabled')) {
-            //
-        }
-
-        return $this->commentOnNode($contentNodeId, $message);
     }
 }
