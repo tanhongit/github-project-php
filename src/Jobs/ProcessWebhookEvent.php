@@ -16,9 +16,7 @@ class ProcessWebhookEvent implements ShouldQueue
     protected array $eventData;
 
     /**
-     * Create a new job instance.
-     *
-     * @param array $eventData
+     * @param  array<string, mixed>  $eventData
      */
     public function __construct(array $eventData)
     {
@@ -28,7 +26,7 @@ class ProcessWebhookEvent implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle()
+    public function handle(): void
     {
         $commentAggregationCacheKey = (string) config('github-project.comment_aggregation_cache_key');
         $commentAggregationTime = (int) config('github-project.comment_aggregation_time');
