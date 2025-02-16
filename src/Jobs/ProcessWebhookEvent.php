@@ -31,7 +31,8 @@ class ProcessWebhookEvent implements ShouldQueue
      */
     public function handle(): void
     {
-        $commentAggregationCacheKey = (string) config('github-project.comment_aggregation_cache_key');
+        $nodeId = $this->eventData['projects_v2_item']['content_node_id'];
+        $commentAggregationCacheKey = "comment_aggregation_{$nodeId}";
         $commentAggregationTime = (int) config('github-project.comment_aggregation_time');
 
         $events = Cache::get($commentAggregationCacheKey, []);
@@ -39,7 +40,7 @@ class ProcessWebhookEvent implements ShouldQueue
         Cache::put($commentAggregationCacheKey, $events, now()->addSeconds($commentAggregationTime));
 
         if (count($events) === 1) {
-            ProcessAggregatedEvents::dispatch()->delay(now()->addSeconds($commentAggregationTime));
+            ProcessAggregatedEvents::dispatch($nodeId)->delay(now()->addSeconds($commentAggregationTime));
         }
     }
 }

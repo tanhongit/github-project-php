@@ -41,11 +41,8 @@ class WebhookAction
 
         $message = view('github-project::md.comment', compact('payload'))->render();
 
-        $response = $this->githubService->handleComment((string) $payload['projects_v2_item']['content_node_id'], $message);
+        $this->githubService->handleComment((string) $payload['projects_v2_item']['content_node_id'], $message);
 
-        return response()->json([
-            'message' => __('github-project::github-project.success.message'),
-            'response' => $response,
-        ]);
+        return response()->json(['message' => __('github-project::github-project.success.message')]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace CSlant\GitHubProject\Services;
 
+use CSlant\GitHubProject\Jobs\ProcessWebhookEvent;
 use Github\Client;
 
 class GithubService
@@ -39,12 +40,12 @@ class GithubService
         return $client->graphql()->execute($query, $variables);
     }
 
-    public function handleComment(string $contentNodeId, string $message): array
+    public function handleComment(string $contentNodeId, string $message): void
     {
         if (config('github-project.is_queue_enabled')) {
-            //
+            ProcessWebhookEvent::dispatch($contentNodeId, $message);
         }
 
-        return $this->commentOnNode($contentNodeId, $message);
+        $this->commentOnNode($contentNodeId, $message);
     }
 }
