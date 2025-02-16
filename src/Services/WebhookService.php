@@ -2,14 +2,17 @@
 
 namespace CSlant\GitHubProject\Services;
 
+use Github\Client;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class WebhookService
 {
-    public function eventApproved(string $event): bool
+    protected Client $client;
+
+    public function __construct(Client $client)
     {
-        return str_contains($event, 'project');
+        $this->client = $client;
     }
 
     public function eventRequestApproved(Request $request): bool
@@ -19,6 +22,42 @@ class WebhookService
         return $this->eventApproved((string) $event);
     }
 
+    protected function eventApproved(string $event): bool
+    {
+        return str_contains($event, 'project');
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    protected function isActionPresent(array $payload): bool
+    {
+        return isset($payload['action']);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    protected function hasValidNodeAndFieldData(array $payload): bool
+    {
+        return isset($payload['projects_v2_item']['content_node_id'], $payload['changes']['field_value']);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    protected function hasFieldTemplate(array $payload): bool
+    {
+        $fieldType = $payload['changes']['field_value']['field_type'] ?? '';
+
+        return view()->exists('github-project::md.fields.'.$fieldType);
+    }
+
+    protected function createErrorResponse(string $message, int $statusCode = 400): JsonResponse
+    {
+        return response()->json(['message' => __($message)], $statusCode);
+    }
+
     /**
      * @param  array<string, mixed>  $payload
      *
@@ -26,35 +65,20 @@ class WebhookService
      */
     public function validatePayload(array $payload): ?JsonResponse
     {
-        if (!isset($payload['action'])) {
-            return response()->json(
-                ['message' => __('github-project::github-project.error.event.action_not_found')],
-                404
-            );
+        if (!$this->isActionPresent($payload)) {
+            return $this->createErrorResponse('github-project::github-project.error.event.action_not_found', 404);
         }
 
-        if (!$this->isStatusCommentEnabled((string) $payload['changes']['field_value']['field_name'])) {
-            return response()->json(
-                ['message' => __('github-project::github-project.error.event.status_comment_disabled')],
-                400
-            );
+        if (!$this->isStatusCommentEnabled($payload)) {
+            return $this->createErrorResponse('github-project::github-project.error.event.status_comment_disabled');
         }
 
-        $nodeId = $payload['projects_v2_item']['content_node_id'] ?? null;
-        $fieldData = $payload['changes']['field_value'] ?? null;
-
-        if (!$nodeId || !$fieldData) {
-            return response()->json(
-                ['message' => __('github-project::github-project.error.event.missing_fields')],
-                400
-            );
+        if (!$this->hasValidNodeAndFieldData($payload)) {
+            return $this->createErrorResponse('github-project::github-project.error.event.missing_fields');
         }
 
-        if (view()->exists('github-project::md.fields.'.$fieldData['field_type'])) {
-            return response()->json(
-                ['message' => __('github-project::github-project.error.event.missing_field_template')],
-                400
-            );
+        if (!$this->hasFieldTemplate($payload)) {
+            return $this->createErrorResponse('github-project::github-project.error.event.missing_field_template');
         }
 
         return null;
@@ -63,13 +87,15 @@ class WebhookService
     /**
      * Check if the field name is "Status" and if status comments are enabled.
      *
-     * @param  string  $fieldName
+     * @param  array<string, mixed>  $payload
      *
      * @return bool
      */
-    public function isStatusCommentEnabled(string $fieldName): bool
+    protected function isStatusCommentEnabled(array $payload): bool
     {
-        if ($fieldName === 'Status' && !config('github-project.enable_status_comment')) {
+        if ((string) $payload['changes']['field_value']['field_name'] === 'Status'
+            && !config('github-project.enable_status_comment')
+        ) {
             return false;
         }
 
