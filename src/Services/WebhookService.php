@@ -26,6 +26,9 @@ class WebhookService
         return str_contains($event, 'project');
     }
 
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     protected function isActionPresent(array $payload): bool
     {
         return isset($payload['action']);
@@ -48,7 +51,7 @@ class WebhookService
         return view()->exists('github-project::md.fields.'.$fieldType);
     }
 
-    protected function createErrorResponse(string $message, ?int $statusCode = 400): JsonResponse
+    protected function createErrorResponse(string $message, int $statusCode = 400): JsonResponse
     {
         return response()->json(['message' => __($message)], $statusCode);
     }
@@ -88,8 +91,9 @@ class WebhookService
      */
     protected function isStatusCommentEnabled(array $payload): bool
     {
-        $fieldName = (string) $payload['changes']['field_value']['field_name'] ?? '';
-        if ($fieldName === 'Status' && !config('github-project.enable_status_comment')) {
+        if ((string) $payload['changes']['field_value']['field_name'] === 'Status'
+            && !config('github-project.enable_status_comment')
+        ) {
             return false;
         }
 
