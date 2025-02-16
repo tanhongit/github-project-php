@@ -50,7 +50,7 @@ class WebhookService
     {
         $fieldType = $payload['changes']['field_value']['field_type'] ?? '';
 
-        return view()->exists('github-project::md.fields.'.$fieldType);
+        return view()->exists('github-project::md.field_types.'.$fieldType);
     }
 
     protected function createErrorResponse(string $message, int $statusCode = 400): JsonResponse
