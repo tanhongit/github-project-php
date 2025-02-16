@@ -18,6 +18,7 @@ class WebhookService
     public function eventRequestApproved(Request $request): bool
     {
         $event = $request->server->get('HTTP_X_GITHUB_EVENT');
+
         return $this->eventApproved((string) $event);
     }
 
@@ -48,6 +49,7 @@ class WebhookService
     protected function hasFieldTemplate(array $payload): bool
     {
         $fieldType = $payload['changes']['field_value']['field_type'] ?? '';
+
         return view()->exists('github-project::md.fields.'.$fieldType);
     }
 
