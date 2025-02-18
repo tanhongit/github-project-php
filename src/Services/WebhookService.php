@@ -50,7 +50,7 @@ class WebhookService
     {
         $fieldType = $payload['changes']['field_value']['field_type'] ?? '';
 
-        return view()->exists('github-project::md.fields.'.$fieldType);
+        return view()->exists('github-project::md.field_types.'.$fieldType);
     }
 
     protected function createErrorResponse(string $message, int $statusCode = 400): JsonResponse
@@ -93,7 +93,9 @@ class WebhookService
      */
     protected function isStatusCommentEnabled(array $payload): bool
     {
-        if ((string) $payload['changes']['field_value']['field_name'] === 'Status'
+        $fieldType = $payload['changes']['field_value']['field_type'] ?? '';
+
+        if ((string) $fieldType === 'Status'
             && !config('github-project.enable_status_comment')
         ) {
             return false;
