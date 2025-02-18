@@ -52,14 +52,15 @@ class GithubService
      */
     public function handleComment(array $payload): void
     {
-        $contentNodeId = (string) $payload['projects_v2_item']['content_node_id'] ?? '';
-
         if (config('github-project.is_queue_enabled')) {
             ProcessWebhookEvent::dispatch($payload);
 
             return;
         }
 
-        $this->commentOnNode($contentNodeId, view('github-project::md.comment', compact('payload'))->render());
+        $this->commentOnNode(
+            (string) $payload['projects_v2_item']['content_node_id'],
+            view('github-project::md.comment', compact('payload'))->render()
+        );
     }
 }

@@ -57,7 +57,7 @@ class ProcessAggregatedEvents implements ShouldQueue
     /**
      * Aggregate messages from events.
      *
-     * @param  list<string>  $eventMessages
+     * @param  array<string, mixed>  $eventMessages
      *
      * @return string
      */

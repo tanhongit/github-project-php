@@ -16,11 +16,11 @@ class ProcessWebhookEvent implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    protected array $eventData;
-
     /**
      * @param  array<string, mixed>  $eventData
      */
+    protected array $eventData;
+
     public function __construct(array $eventData)
     {
         $this->eventData = $eventData;
@@ -35,7 +35,7 @@ class ProcessWebhookEvent implements ShouldQueue
         $commentAggregationCacheKey = config('github-project.comment_aggregation_cache_key')."_{$nodeId}";
         $commentAggregationTime = (int) config('github-project.comment_aggregation_time');
 
-        $eventMessages = Cache::get($commentAggregationCacheKey, []);
+        $eventMessages = (array) Cache::get($commentAggregationCacheKey, []);
         $eventMessages[] = view('github-project::md.shared.content', ['payload' => $this->eventData])->render();
 
         Cache::put($commentAggregationCacheKey, $eventMessages, now()->addSeconds($commentAggregationTime));
