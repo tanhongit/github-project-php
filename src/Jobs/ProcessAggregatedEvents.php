@@ -32,7 +32,7 @@ class ProcessAggregatedEvents implements ShouldQueue
      */
     public function handle(): void
     {
-        $commentAggregationCacheKey = "comment_aggregation_{$this->nodeId}";
+        $commentAggregationCacheKey = config('github-project.comment_aggregation_cache_key')."_{$this->nodeId}";
         $eventMessages = Cache::pull($commentAggregationCacheKey, []);
 
         if (empty($eventMessages)) {
@@ -46,9 +46,9 @@ class ProcessAggregatedEvents implements ShouldQueue
         $author = Cache::pull($commentAggregationCacheKey.'_author', '');
 
         $message .= '\n\n'.view(
-            'github-project::md.shared.author',
-            ['name' => $author['name'], 'html_url' => $author['html_url']]
-        )->render();
+                'github-project::md.shared.author',
+                ['name' => $author['name'], 'html_url' => $author['html_url']]
+            )->render();
 
         $githubService = new GithubService;
         $githubService->commentOnNode($this->nodeId, $message);
