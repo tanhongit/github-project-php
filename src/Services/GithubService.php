@@ -7,6 +7,13 @@ use Github\Client;
 
 class GithubService
 {
+    protected Client $client;
+
+    public function __construct(?Client $client = null)
+    {
+        $this->client = $client ?? new Client;
+    }
+
     /**
      * @param  string  $contentNodeId
      * @param  string  $message
@@ -35,9 +42,7 @@ class GithubService
             ],
         ];
 
-        $client = new Client;
-
-        return $client->graphql()->execute($query, $variables);
+        return $this->client->graphql()->execute($query, $variables);
     }
 
     /**
