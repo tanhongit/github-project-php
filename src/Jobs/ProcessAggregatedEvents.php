@@ -46,9 +46,9 @@ class ProcessAggregatedEvents implements ShouldQueue
         $author = Cache::pull($commentAggregationCacheKey.'_author', '');
 
         $message .= '\n\n'.view(
-                'github-project::md.shared.author',
-                ['name' => $author['name'], 'html_url' => $author['html_url']]
-            )->render();
+            'github-project::md.shared.author',
+            ['name' => $author['name'], 'html_url' => $author['html_url']]
+        )->render();
 
         $githubService = new GithubService;
         $githubService->commentOnNode($this->nodeId, $message);
