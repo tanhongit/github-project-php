@@ -20,12 +20,15 @@ class ProcessAggregatedEvents implements ShouldQueue
 
     protected string $nodeId;
 
+    protected GithubService $githubService;
+
     /**
      * Create a new job instance.
      */
-    public function __construct(string $nodeId)
+    public function __construct(string $nodeId, GithubService $githubService)
     {
         $this->nodeId = $nodeId;
+        $this->githubService = $githubService;
     }
 
     /**
@@ -55,8 +58,7 @@ class ProcessAggregatedEvents implements ShouldQueue
         )->render();
 
         Log::info('ProcessAggregatedEvents: Message: '.$message);
-        $githubService = new GithubService;
-        $githubService->commentOnNode($this->nodeId, $message);
+        $this->githubService->commentOnNode($this->nodeId, $message);
     }
 
     /**
