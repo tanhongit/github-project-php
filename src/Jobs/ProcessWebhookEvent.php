@@ -21,6 +21,11 @@ class ProcessWebhookEvent implements ShouldQueue
      */
     protected array $eventData;
 
+    /**
+     * Create a new job instance.
+     *
+     * @param  array<string, mixed>  $eventData
+     */
     public function __construct(array $eventData)
     {
         $this->eventData = $eventData;

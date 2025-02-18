@@ -33,6 +33,8 @@ class ProcessAggregatedEvents implements ShouldQueue
     public function handle(): void
     {
         $commentAggregationCacheKey = config('github-project.comment_aggregation_cache_key')."_{$this->nodeId}";
+
+        /** @var array<string, mixed> $eventMessages */
         $eventMessages = Cache::pull($commentAggregationCacheKey, []);
 
         if (empty($eventMessages)) {
