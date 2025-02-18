@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class ProcessWebhookEvent implements ShouldQueue
 {
@@ -55,7 +56,9 @@ class ProcessWebhookEvent implements ShouldQueue
                 now()->addSeconds($commentAggregationTime)
             );
         }
-
+        Log::info('Event message count: '.count($eventMessages));
+        Log::info('Event message: '.json_encode($eventMessages));
+        Log::info('Event author: '.json_encode(Cache::get($commentAggregationCacheKey.'_author')));
         if (count($eventMessages) === 1) {
             ProcessAggregatedEvents::dispatch($nodeId)->delay(now()->addSeconds($commentAggregationTime));
         }

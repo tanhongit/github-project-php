@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class ProcessAggregatedEvents implements ShouldQueue
 {
@@ -42,16 +43,18 @@ class ProcessAggregatedEvents implements ShouldQueue
 
             return;
         }
-
+        Log::info('ProcessAggregatedEvents: Event message: '.json_encode($eventMessages));
         $message = $this->aggregateMessages($eventMessages);
         Cache::forget($commentAggregationCacheKey);
         $author = Cache::pull($commentAggregationCacheKey.'_author', '');
 
+        Log::info('ProcessAggregatedEvents: Author: '.json_encode($author));
         $message .= '\n\n'.view(
             'github-project::md.shared.author',
             ['name' => $author['name'], 'html_url' => $author['html_url']]
         )->render();
 
+        Log::info('ProcessAggregatedEvents: Message: '.$message);
         $githubService = new GithubService;
         $githubService->commentOnNode($this->nodeId, $message);
     }
