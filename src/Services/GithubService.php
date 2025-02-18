@@ -51,6 +51,7 @@ class GithubService
 
         if (config('github-project.is_queue_enabled')) {
             ProcessWebhookEvent::dispatch($payload);
+
             return;
         }
 
