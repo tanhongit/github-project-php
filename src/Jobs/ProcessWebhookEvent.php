@@ -35,11 +35,23 @@ class ProcessWebhookEvent implements ShouldQueue
         $commentAggregationCacheKey = "comment_aggregation_{$nodeId}";
         $commentAggregationTime = (int) config('github-project.comment_aggregation_time');
 
-        $events = Cache::get($commentAggregationCacheKey, []);
-        $events[] = $this->eventData;
-        Cache::put($commentAggregationCacheKey, $events, now()->addSeconds($commentAggregationTime));
+        $eventMessages = Cache::get($commentAggregationCacheKey, []);
+        $eventMessages[] = view('github-project::md.shared.content', ['payload' => $this->eventData])->render();
 
-        if (count($events) === 1) {
+        Cache::put($commentAggregationCacheKey, $eventMessages, now()->addSeconds($commentAggregationTime));
+
+        if (!Cache::has($commentAggregationCacheKey.'_author')) {
+            Cache::put(
+                $commentAggregationCacheKey.'_author',
+                [
+                    'name' => $this->eventData['sender']['login'],
+                    'html_url' => $this->eventData['sender']['html_url'],
+                ],
+                now()->addSeconds($commentAggregationTime)
+            );
+        }
+
+        if (count($eventMessages) === 1) {
             ProcessAggregatedEvents::dispatch($nodeId)->delay(now()->addSeconds($commentAggregationTime));
         }
     }

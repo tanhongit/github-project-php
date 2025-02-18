@@ -40,15 +40,18 @@ class GithubService
         return $client->graphql()->execute($query, $variables);
     }
 
+    /**
+     * @param  array<string, mixed>  $payload
+     *
+     * @throws \Throwable
+     */
     public function handleComment(array $payload): void
     {
-        $contentNodeId = (string) $payload['projects_v2_item']['content_node_id'];
+        $contentNodeId = (string) $payload['projects_v2_item']['content_node_id'] ?? '';
 
         if (config('github-project.is_queue_enabled')) {
-            ProcessWebhookEvent::dispatch(
-                $contentNodeId,
-                view('github-project::md.shared.content', compact('payload'))->render()
-            );
+            ProcessWebhookEvent::dispatch($payload);
+            return;
         }
 
         $this->commentOnNode($contentNodeId, view('github-project::md.comment', compact('payload'))->render());
