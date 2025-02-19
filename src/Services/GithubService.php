@@ -3,6 +3,7 @@
 namespace CSlant\GitHubProject\Services;
 
 use CSlant\GitHubProject\Jobs\ProcessWebhookEvent;
+use Github\AuthMethod;
 use Github\Client;
 
 class GithubService
@@ -41,6 +42,8 @@ class GithubService
                 'body' => $message,
             ],
         ];
+
+        $this->client->authenticate((string) config('github-project.github.access_token'), null, AuthMethod::ACCESS_TOKEN);
 
         return $this->client->graphql()->execute($query, $variables);
     }
