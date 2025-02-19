@@ -2,19 +2,11 @@
 
 namespace CSlant\GitHubProject\Services;
 
-use Github\Client;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class WebhookService
 {
-    protected Client $client;
-
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
-    }
-
     public function eventRequestApproved(Request $request): bool
     {
         $event = $request->server->get('HTTP_X_GITHUB_EVENT');
