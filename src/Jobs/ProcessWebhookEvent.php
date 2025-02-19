@@ -16,9 +16,7 @@ class ProcessWebhookEvent implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    /**
-     * @param  array<string, mixed>  $eventData
-     */
+    /** @var  array<string, mixed> $eventData */
     protected array $eventData;
 
     /**
