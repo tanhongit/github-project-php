@@ -34,7 +34,7 @@ class ProcessWebhookEvent implements ShouldQueue
      */
     public function handle(): void
     {
-        $nodeId = $this->eventData['projects_v2_item']['content_node_id'];
+        $nodeId = (string) $this->eventData['projects_v2_item']['content_node_id'];
         $commentAggregationCacheKey = config('github-project.comment_aggregation_cache_key')."_{$nodeId}";
         $commentAggregationTime = (int) config('github-project.comment_aggregation_time');
 
