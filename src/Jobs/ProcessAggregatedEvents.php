@@ -43,7 +43,7 @@ class ProcessAggregatedEvents implements ShouldQueue
         Cache::forget($commentAggregationCacheKey);
         Cache::forget($commentAggregationCacheKey.'_author');
 
-        $message .= '\n\n'.view(
+        $message .= view(
             'github-project::md.shared.author',
             ['name' => $author['name'], 'html_url' => $author['html_url']]
         )->render();
