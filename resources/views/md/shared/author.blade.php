@@ -1,2 +1,2 @@
-`
-Made changes by: [{{ $name }}]({{ $html_url }})
+
+> Made changes by: [{{ $name }}]({{ $html_url }})
