@@ -48,7 +48,7 @@ class ProcessAggregatedEvents implements ShouldQueue
             ['name' => $author['name'], 'html_url' => $author['html_url']]
         )->render();
 
-        $githubService = new GithubService();
+        $githubService = new GithubService;
         $githubService->commentOnNode($this->nodeId, $message);
     }
 
