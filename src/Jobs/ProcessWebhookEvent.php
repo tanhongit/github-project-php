@@ -8,7 +8,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class ProcessWebhookEvent implements ShouldQueue
 {
@@ -44,7 +43,7 @@ class ProcessWebhookEvent implements ShouldQueue
         $eventMessages = (array) Cache::get($commentAggregationCacheKey, []);
         $eventMessages[] = view('github-project::md.shared.content', ['payload' => $this->eventData])->render();
 
-        Cache::put($commentAggregationCacheKey, $eventMessages, now()->addSeconds($commentAggregationTime));
+        Cache::put($commentAggregationCacheKey, $eventMessages, now()->addSeconds($commentAggregationTime + 3));
 
         if (!Cache::has($commentAggregationCacheKey.'_author')) {
             Cache::put(
@@ -53,12 +52,10 @@ class ProcessWebhookEvent implements ShouldQueue
                     'name' => $this->eventData['sender']['login'],
                     'html_url' => $this->eventData['sender']['html_url'],
                 ],
-                now()->addSeconds($commentAggregationTime)
+                now()->addSeconds($commentAggregationTime + 3)
             );
         }
-        Log::info('Event message count: '.count($eventMessages));
-        Log::info('Event message: '.json_encode($eventMessages));
-        Log::info('Event author: '.json_encode(Cache::get($commentAggregationCacheKey.'_author')));
+
         if (count($eventMessages) === 1) {
             ProcessAggregatedEvents::dispatch($nodeId)->delay(now()->addSeconds($commentAggregationTime));
         }

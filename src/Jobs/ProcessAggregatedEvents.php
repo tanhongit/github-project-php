@@ -9,7 +9,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class ProcessAggregatedEvents implements ShouldQueue
 {
@@ -20,15 +19,12 @@ class ProcessAggregatedEvents implements ShouldQueue
 
     protected string $nodeId;
 
-    protected GithubService $githubService;
-
     /**
      * Create a new job instance.
      */
-    public function __construct(string $nodeId, GithubService $githubService)
+    public function __construct(string $nodeId)
     {
         $this->nodeId = $nodeId;
-        $this->githubService = $githubService;
     }
 
     /**
@@ -41,19 +37,19 @@ class ProcessAggregatedEvents implements ShouldQueue
         /** @var array<string, mixed> $eventMessages */
         $eventMessages = Cache::pull($commentAggregationCacheKey, []);
 
-        Log::info('ProcessAggregatedEvents: Event message: '.json_encode($eventMessages));
         $message = $this->aggregateMessages($eventMessages);
-        Cache::forget($commentAggregationCacheKey);
-        $author = Cache::pull($commentAggregationCacheKey.'_author', '');
+        $author = Cache::pull($commentAggregationCacheKey.'_author', []);
 
-        Log::info('ProcessAggregatedEvents: Author: '.$author);
+        Cache::forget($commentAggregationCacheKey);
+        Cache::forget($commentAggregationCacheKey.'_author');
+
         $message .= '\n\n'.view(
             'github-project::md.shared.author',
             ['name' => $author['name'], 'html_url' => $author['html_url']]
         )->render();
 
-        Log::info('ProcessAggregatedEvents: Message: '.$message);
-        $this->githubService->commentOnNode($this->nodeId, $message);
+        $githubService = new GithubService();
+        $githubService->commentOnNode($this->nodeId, $message);
     }
 
     /**
