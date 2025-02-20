@@ -2,6 +2,7 @@
 
 namespace CSlant\GitHubProject\Actions;
 
+use CSlant\GitHubProject\Services\GithubService;
 use CSlant\GitHubProject\Services\WebhookService;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,9 +12,12 @@ class WebhookAction
 {
     protected WebhookService $webhookService;
 
-    public function __construct(WebhookService $webhookService)
+    protected GithubService $githubService;
+
+    public function __construct(WebhookService $webhookService, GithubService $githubService)
     {
         $this->webhookService = $webhookService;
+        $this->githubService = $githubService;
     }
 
     /**
@@ -35,9 +39,7 @@ class WebhookAction
             return $validationResponse;
         }
 
-        $message = view('github-project::md.comment', compact('payload'))->render();
-
-        $this->webhookService->commentOnNode((string) $payload['projects_v2_item']['content_node_id'], $message);
+        $this->githubService->handleComment($payload);
 
         return response()->json(['message' => __('github-project::github-project.success.message')]);
     }
