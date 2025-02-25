@@ -85,10 +85,10 @@ class WebhookService
      */
     protected function isStatusCommentEnabled(array $payload): bool
     {
-        $fieldType = $payload['changes']['field_value']['field_type'] ?? '';
+        $fieldType = $payload['changes']['field_value']['field_name'] ?? '';
 
         return !((string) $fieldType === 'Status'
-            && (bool) config('github-project.enable_status_comment') === false
+            && !config('github-project.enable_status_comment')
         );
     }
 }
