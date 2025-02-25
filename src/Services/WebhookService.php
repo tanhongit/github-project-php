@@ -87,12 +87,8 @@ class WebhookService
     {
         $fieldType = $payload['changes']['field_value']['field_type'] ?? '';
 
-        if ((string) $fieldType === 'Status'
-            && !config('github-project.enable_status_comment')
-        ) {
-            return false;
-        }
-
-        return true;
+        return !((string) $fieldType === 'Status'
+            && (bool) config('github-project.enable_status_comment') === false
+        );
     }
 }
