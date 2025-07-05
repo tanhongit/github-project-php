@@ -5,6 +5,7 @@ namespace CSlant\GitHubProject\Actions;
 use CSlant\GitHubProject\Services\GithubService;
 use CSlant\GitHubProject\Services\WebhookService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Throwable;
 
 class GenerateCommentAction
@@ -22,16 +23,16 @@ class GenerateCommentAction
     /**
      * Generate a comment message from the webhook payload
      *
-     * @param  array<string, mixed>|object  $payload
+     * @param  Request  $request
      * @param  bool  $validate  Whether to validate the payload (default: true)
      *
      * @return JsonResponse
      * @throws Throwable
      */
-    public function __invoke(array|object $payload, bool $validate = true): JsonResponse
+    public function __invoke(Request $request, bool $validate = true): JsonResponse
     {
         try {
-            $payload = is_object($payload) ? (array) $payload : $payload;
+            $payload = $request->isJson() ? $request->json()->all() : json_decode($request->getContent(), true);
 
             if ($validate) {
                 $validationResponse = $this->webhookService->validatePayload($payload);
