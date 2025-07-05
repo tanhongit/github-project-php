@@ -5,7 +5,7 @@ if (!function_exists('color_value_format')) {
      * Format a value with an optional color.
      *
      * @param  string  $value
-     * @param  string|null  $color
+     * @param  null|string  $color
      * @return string
      */
     function color_value_format(string $value, ?string $color = null): string
@@ -22,10 +22,10 @@ if (!function_exists('format_date')) {
     /**
      * Format a date string.
      *
-     * @param  string|null  $date
+     * @param  null|string  $date
      * @param  string  $format
      *
-     * @return string|null
+     * @return null|string
      */
     function format_date(?string $date, string $format = 'Y-m-d'): ?string
     {
