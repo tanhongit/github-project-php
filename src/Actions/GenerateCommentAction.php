@@ -45,7 +45,7 @@ class GenerateCommentAction
             }
 
             if ($validate) {
-                $validationResponse = $this->webhookService->validatePayload($payload);
+                $validationResponse = $this->webhookService->validatePayloadForComment($payload);
                 if ($validationResponse !== null) {
                     return $validationResponse;
                 }
