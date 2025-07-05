@@ -8,6 +8,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
 
+use function Pest\Laravel\json;
+
 class GenerateCommentAction
 {
     protected WebhookService $webhookService;
@@ -31,8 +33,18 @@ class GenerateCommentAction
      */
     public function __invoke(Request $request, bool $validate = true): JsonResponse
     {
+        $startTime = microtime(true);
+
         try {
             $payload = $request->isJson() ? $request->json()->all() : json_decode($request->getContent(), true);
+
+            if (!empty($payload['payload'])) {
+                $payload = $payload['payload'];
+            }
+
+            if (is_string($payload)) {
+                $payload = json_decode($payload, true);
+            }
 
             if ($validate) {
                 $validationResponse = $this->webhookService->validatePayload($payload);
@@ -47,14 +59,20 @@ class GenerateCommentAction
                 'success' => true,
                 'message' => __('github-project::github-project.success.message'),
                 'comment' => $comment,
-                'payload' => $payload,
+                'execution_time' => round((microtime(true) - $startTime) * 1000, 2) . 'ms'
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => __('github-project::github-project.error.message', ['error' => $e->getMessage()]),
-                'comment' => '',
-                'payload' => $payload,
+                'message' => 'Error processing request',
+                'error' => [
+                    'message' => $e->getMessage(),
+                    'type' => get_class($e),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => explode("\n", $e->getTraceAsString())
+                ],
+                'execution_time' => round((microtime(true) - $startTime) * 1000, 2) . 'ms'
             ], 500);
         }
     }
