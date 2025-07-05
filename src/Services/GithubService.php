@@ -63,7 +63,19 @@ class GithubService
 
         $this->commentOnNode(
             (string) $payload['projects_v2_item']['content_node_id'],
-            view('github-project::md.comment', compact('payload'))->render()
+            $this->generateCommentMessage($payload)
         );
+    }
+
+    /**
+     * Generate the comment message from payload without posting it
+     *
+     * @param  array<string, mixed>  $payload
+     *
+     * @throws \Throwable
+     */
+    public function generateCommentMessage(array $payload): string
+    {
+        return view('github-project::md.comment', compact('payload'))->render();
     }
 }
