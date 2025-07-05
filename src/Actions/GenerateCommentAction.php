@@ -8,8 +8,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
 
-use function Pest\Laravel\json;
-
 class GenerateCommentAction
 {
     protected WebhookService $webhookService;
@@ -59,7 +57,7 @@ class GenerateCommentAction
                 'success' => true,
                 'message' => __('github-project::github-project.success.message'),
                 'comment' => $comment,
-                'execution_time' => round((microtime(true) - $startTime) * 1000, 2) . 'ms'
+                'execution_time' => round((microtime(true) - $startTime) * 1000, 2) . 'ms',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -70,9 +68,9 @@ class GenerateCommentAction
                     'type' => get_class($e),
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
-                    'trace' => explode("\n", $e->getTraceAsString())
+                    'trace' => explode("\n", $e->getTraceAsString()),
                 ],
-                'execution_time' => round((microtime(true) - $startTime) * 1000, 2) . 'ms'
+                'execution_time' => round((microtime(true) - $startTime) * 1000, 2) . 'ms',
             ], 500);
         }
     }
