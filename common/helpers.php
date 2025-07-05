@@ -40,16 +40,3 @@ if (!function_exists('format_date')) {
         }
     }
 }
-
-if (!function_exists('format_boolean')) {
-    /**
-     * Format a boolean value.
-     *
-     * @param  mixed  $value
-     * @return string
-     */
-    function format_boolean($value): string
-    {
-        return filter_var($value, FILTER_VALIDATE_BOOLEAN) ? '✅' : '❌';
-    }
-}
