@@ -22,15 +22,17 @@ class GenerateCommentAction
     /**
      * Generate a comment message from the webhook payload
      *
-     * @param  array<string, mixed>  $payload  The GitHub webhook payload
+     * @param  array<string, mixed>|object  $payload
      * @param  bool  $validate  Whether to validate the payload (default: true)
      *
      * @return JsonResponse
      * @throws Throwable
      */
-    public function __invoke(array $payload, bool $validate = true): JsonResponse
+    public function __invoke(array|object $payload, bool $validate = true): JsonResponse
     {
         try {
+            $payload = is_object($payload) ? (array) $payload : $payload;
+
             if ($validate) {
                 $validationResponse = $this->webhookService->validatePayload($payload);
                 if ($validationResponse !== null) {
