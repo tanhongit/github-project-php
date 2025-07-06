@@ -2,6 +2,20 @@
 
 Here you can see the full list of changes between each GitHub Project PHP package release.
 
+## v1.2.0 - 2025-07-06
+
+### What's Changed
+
+* Add api to get the comment message with payload.
+* chore(deps): bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot in https://github.com/cslant/github-project-php/pull/5
+* chore(deps): bump stefanzweifel/git-auto-commit-action from 5 to 6 by @dependabot in https://github.com/cslant/github-project-php/pull/6
+
+### New Contributors
+
+* @dependabot made their first contribution in https://github.com/cslant/github-project-php/pull/5
+
+**Full Changelog**: https://github.com/cslant/github-project-php/compare/v1.1.0...v1.2.0
+
 ## v1.1.0 - 2025-02-20
 
 ### What's Changed
