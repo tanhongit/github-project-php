@@ -68,6 +68,11 @@ class WebhookService
         return null;
     }
 
+    /**
+     * @param  array<string, mixed>  $payload
+     *
+     * @return null|JsonResponse
+     */
     public function validatePayloadForComment(array $payload): ?JsonResponse
     {
         if (!$this->isActionPresent($payload)) {
