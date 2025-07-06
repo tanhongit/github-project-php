@@ -57,12 +57,21 @@ class WebhookService
      */
     public function validatePayload(array $payload): ?JsonResponse
     {
-        if (!$this->isActionPresent($payload)) {
-            return $this->createErrorResponse('github-project::github-project.error.event.action_not_found', 404);
+        if ($this->validatePayloadForComment($payload) !== null) {
+            return $this->validatePayloadForComment($payload);
         }
 
         if (!$this->isStatusCommentEnabled($payload)) {
             return $this->createErrorResponse('github-project::github-project.error.event.status_comment_disabled');
+        }
+
+        return null;
+    }
+
+    public function validatePayloadForComment(array $payload): ?JsonResponse
+    {
+        if (!$this->isActionPresent($payload)) {
+            return $this->createErrorResponse('github-project::github-project.error.event.action_not_found', 404);
         }
 
         if (!$this->hasValidNodeAndFieldData($payload)) {

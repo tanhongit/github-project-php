@@ -16,4 +16,7 @@ $routePrefix = config('github-project.route_prefix');
 
 Route::prefix($routePrefix)->name("$routePrefix.")->group(function () {
     Route::post('/webhook', \CSlant\GitHubProject\Actions\WebhookAction::class);
+
+    Route::post('/generate-comment', \CSlant\GitHubProject\Actions\GenerateCommentAction::class)
+        ->name('github-project.generate-comment');
 });
