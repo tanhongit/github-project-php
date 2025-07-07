@@ -34,7 +34,14 @@ class GenerateCommentAction
         $startTime = microtime(true);
 
         try {
-            $payload = $request->isJson() ? $request->json()->all() : json_decode($request->getContent(), true);
+            if ($request->isJson()) {
+                $jsonContent = $request->json();
+                $payload = is_object($jsonContent) && method_exists($jsonContent, 'all')
+                    ? $jsonContent->all()
+                    : (array) $jsonContent;
+            } else {
+                $payload = json_decode($request->getContent(), true);
+            }
 
             if (!empty($payload['payload'])) {
                 $payload = $payload['payload'];
